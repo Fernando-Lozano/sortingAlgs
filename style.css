@@ -1,6 +1,7 @@
 /* temporary colors */
 :root {
-    --squares: #0DCAF0;
+    --squares: #e2eff5;
+    --bars: #6b5b95; 
 }
 * {
     margin: 0px;
@@ -9,18 +10,25 @@
 }
 .col-md-6 {
     height: 50vh;
-    min-height: 350px;
+    min-height: 360px;
 }
 .display {
-    background-color: red;
+    background-color: var(--squares);
     height: 250px;
     width: 360px;
 }
 .block {
     width: 12px; /* might need to adjust since i changed display width*/
     margin: 0 3px;
-    background-color: #6b5b95;
+    background-color: var(--bars);
     position: relative;
     bottom: 0px;
-    transition: 0.2s all ease;
+}
+.leftSwap {
+    transition: all 0.2s ease;
+    transform: translate(18px);
+}
+.rightSwap {
+    transition: all 0.2s ease;
+    transform: translate(-18px);
 }
