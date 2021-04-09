@@ -1,25 +1,26 @@
 /* temporary colors */
 :root {
-    --main-bg-color: rgb(28, 22, 39);
-    --second-bg-color: rgb(45, 44, 88);
-    --squares: rgb(51, 191, 204);
-    --item: rgb(95, 113, 141); 
+    --squares: #0DCAF0;
 }
-body {
-    background-color: var(--main-bg-color);
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
 }
-#main {
-    background-color: var(--second-bg-color);
+.col-md-6 {
+    height: 50vh;
+    min-height: 350px;
 }
-#one, #two, #three, #four {
-    width: 100%;
-    height: 300px;
-    background-color: var(--squares);
+.display {
+    background-color: red;
+    height: 250px;
+    width: 360px;
 }
-button {
-    width: 90px;
-}
-.item {
-    background-color: var(--item);
-    width: 2%;
+.block {
+    width: 12px; /* might need to adjust since i changed display width*/
+    margin: 0 3px;
+    background-color: #6b5b95;
+    position: relative;
+    bottom: 0px;
+    transition: 0.2s all ease;
 }

@@ -1,92 +1,94 @@
-const   square1 = document.querySelector("#one"),
-        square2 = document.querySelector("#two"),
-        square3 = document.querySelector("#three"),
-        square4 = document.querySelector("#four"),
-        bubbleReset = document.querySelector("#bubbleReset"),
-        bubbleRun = document.querySelector("#bubbleRun");
-        // add more buttons for other displays
-var div, bubbleScramble;
+var bubbleDisplay = document.querySelectorAll(".display")[0];
 
-// random heights used for the display bars
-let heights = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 166, 168, 170, 172, 174, 176, 178, 180, 182, 184, 186, 188, 190, 192, 194, 196, 198, 200];
+// *** bubble sort ***
 
-// ****** bubble sort ******
+// most of this section was taken from 
+// https://www.geeksforgeeks.org/bubble-sort-visualization-using-javascript/
 
-populateDisplays(square1, heights);
+// Function to generate the array of blocks
+function generatearray() {
+    for (var i = 0; i < 20; i++) {
 
-// scrambles bubble sort display
-bubbleReset.addEventListener("click", () => {
-    square1.innerHTML = "";
-    bubbleScramble = shuffle(heights);
-    console.log(bubbleScramble.length);
-    populateDisplays(square1, bubbleScramble);
-});
-bubbleRun.addEventListener("click", () => {
-    // const 
-});
+        // Return a value from 1 to 250 (both inclusive)--height of container
+        var value = Math.ceil(Math.random() * 250);
 
-// sorts bubble sort display
-bubbleRun.addEventListener("click", () => {
-    counter = 0, solved = true;
-    div = document.querySelectorAll(".item");
-    bubbleSort();
-});
+        // Creating element div
+        var array_ele = document.createElement("div");
 
-// ****** helpers *****
+        // Adding class 'block' to div
+        array_ele.classList.add("block");
 
-// populates provided div with bars
-function populateDisplays(div, heights) {
-    heights.forEach(num => {
-        let bar = document.createElement("div");
-        bar.style.height = `${num}px`;
-        bar.classList.add("item");
-        div.appendChild(bar);
+        // Adding style to div
+        array_ele.style.height = `${value}px`;
+        // array_ele.style.transform = `translate(${i * 6}px)`; might remove permanently if i can make alternative
+
+        // data attribute to store value
+        array_ele.dataset.value = value;
+
+        // Appending created elements to index.html 
+        bubbleDisplay.appendChild(array_ele);
+    }
+}
+
+// Promise to swap two blocks
+function swap(el1, el2) {
+    return new Promise((resolve) => {
+
+        window.requestAnimationFrame(function () {
+
+            // For waiting for .25 sec
+            setTimeout(() => {
+                bubbleDisplay.insertBefore(el2, el1);           // make changes here!
+                resolve();
+            }, 10); //set to 250
+        });
     });
 }
 
-// https://bost.ocks.org/mike/shuffle/
-// Fisher-Yates Shuffle with an O(n) time complexity
-function shuffle(array) {
-    var m = array.length, t, i;
+// Asynchronous BubbleSort function
+async function BubbleSort(delay = 100) {
+    var blocks = document.querySelectorAll(".block");
 
-    // While there remain elements to shuffle…
-    while (m) {
+    // BubbleSort Algorithm
+    for (var i = 0; i < blocks.length; i += 1) {
+        for (var j = 0; j < blocks.length - i - 1; j += 1) {
 
-        // Pick a remaining element…
-        i = Math.floor(Math.random() * m--);
+            // To change background-color of the
+            // blocks to be compared
+            blocks[j].style.backgroundColor = "#FF4949";
+            blocks[j + 1].style.backgroundColor = "#FF4949";
 
-        // And swap it with the current element.
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
-    return array;
-}
-// iterator that contains sorting algorithm
-var counter, solved;
-function bubbleSort() {
-    let index = counter % (bubbleScramble.length - 1); // alternative to nested loops
-    let temp;
-    if (bubbleScramble[index] > bubbleScramble[index+1]) {
-        temp = bubbleScramble[index];
-        bubbleScramble[index] = bubbleScramble[index+1];
-        bubbleScramble[index+1] = temp;
+            // To wait for .1 sec
+            await new Promise((resolve) =>
+                setTimeout(() => {
+                    resolve();
+                }, delay)
+            );
 
-        // for display
-        div[index].style.height = `${bubbleScramble[index]}px`;
-        div[index+1].style.height = `${bubbleScramble[index+1]}px`;
-        solved = false;
-    }
-    if (solved && counter > 1 && index == 0) {
-        console.log("here");
-        return;
-    };
-    if (index == 0 && counter > 1) {
-        solved = true;
-    }
-    counter++;
-    // bubble sort has a time complexity of O(n^2)
-    if (counter < bubbleScramble.length ** 2) {
-        setTimeout(bubbleSort, 5);
+            console.log("run");
+            var value1 = Number(blocks[j].dataset.value);
+            var value2 = Number(blocks[j + 1].dataset.value);
+
+            // To compare value of two blocks
+            if (value1 > value2) {
+                await swap(blocks[j], blocks[j + 1]);
+                blocks = document.querySelectorAll(".block");
+            }
+
+            // Changing the color to the previous one
+            blocks[j].style.backgroundColor = "#6b5b95";
+            blocks[j + 1].style.backgroundColor = "#6b5b95";
+        }
+
+        //changing the color of greatest element 
+        //found in the above traversal
+        blocks[blocks.length - i - 1]
+            .style.backgroundColor = "#13CE66";
     }
 }
+
+// Calling generatearray function
+generatearray();
+
+// Calling BubbleSort function
+BubbleSort(10);
