@@ -8,7 +8,7 @@ var colors = {
 
 // *** bubble sort ***
 
-// most of this section was taken from 
+// most of bubble sort section was taken from 
 // https://www.geeksforgeeks.org/bubble-sort-visualization-using-javascript/
 
 // time complexity of O(n^2)
@@ -67,7 +67,6 @@ async function BubbleSort(delay = 100) {
                 }, delay)
             );
 
-            console.log("run");
             let value1 = Number(blocks[j].dataset.value);
             let value2 = Number(blocks[j + 1].dataset.value);
 
@@ -91,6 +90,8 @@ async function BubbleSort(delay = 100) {
 
 // *** selection sort ***
 
+// time complexity of O(n^2)
+
 const   selectionDisplay = document.querySelectorAll(".display")[1],
         selectionSortBtn = document.querySelector("#selectionSort");
 
@@ -111,7 +112,6 @@ async function selectionSort(delay = 100) {
         // blocks to be compared
         blocks[i].style.backgroundColor = colors.compare;
         
-        let value1 = Number(blocks[i].dataset.value);
         let temp = i;
         for (let j = i+1; j < blocks.length; j++) {
             // To change background-color of the
@@ -124,14 +124,13 @@ async function selectionSort(delay = 100) {
                 resolve();
             }, delay)
             );
-
+            
+            let value1 = Number(blocks[temp].dataset.value);
             let value2 = Number(blocks[j].dataset.value);
-
-            if (value2 < value1) {
+            if (value1 > value2) {
                 (temp!==i)?blocks[temp].style.backgroundColor = colors.main:"";
                 temp = j;
                 blocks[temp].style.backgroundColor = colors.temp;
-                value1 = Number(blocks[temp].dataset.value);
             }
             else {
                 blocks[j].style.backgroundColor = colors.main;
@@ -140,7 +139,8 @@ async function selectionSort(delay = 100) {
         }
         // swaps the two
         if (temp !== i) {
-            selectionSwap(blocks[i], blocks[temp]);
+            await selectionSwap(blocks[i], blocks[temp], temp-i);
+            blocks = document.querySelectorAll("#two .block");
             blocks[i].style.backgroundColor = colors.sorted;
             blocks[temp].style.backgroundColor = colors.main;
         }
@@ -151,16 +151,38 @@ async function selectionSort(delay = 100) {
     blocks[blocks.length-1].style.backgroundColor = colors.sorted;
 }
 
-function selectionSwap(el1, el2) {
-    // swap heights
-    let temp = el1.style.height;
-    el1.style.height = el2.style.height;
-    el2.style.height = temp;
+function selectionSwap(el1, el2, transform) {
+    return new Promise((resolve) => {
+        // add animations here
+        el1.classList.toggle("transition");
+        el1.style.transform = `translate(${transform * 18}px)`;
+        
+        el2.classList.toggle("transition");
+        el2.style.transform = `translate(-${transform * 18}px)`;
 
-    // swap values
-    temp = el1.dataset.value;
-    el1.dataset.value = el2.dataset.value;
-    el2.dataset.value = temp;
+        window.requestAnimationFrame(function () {
+
+            // For waiting for .25 sec
+            setTimeout(async () => {
+                // remove animations here
+                el1.classList.toggle("transition");
+                el1.style.transform = "";
+
+                el2.classList.toggle("transition");
+                el2.style.transform = "";
+                // swap heights
+                let temp = el1.style.height;
+                el1.style.height = el2.style.height;
+                el2.style.height = temp;
+            
+                // swap values
+                temp = el1.dataset.value;
+                el1.dataset.value = el2.dataset.value;
+                el2.dataset.value = temp;
+                resolve();
+            }, 250);
+        });
+    });
 }
 
 
@@ -188,3 +210,7 @@ function generatearray(container) {
         container.appendChild(array_ele);
     }
 }
+
+// Note:
+// adding a promise with setTimeout in an async function with for loop prevents
+// code blocking

@@ -8,10 +8,6 @@
     padding: 0px;
     box-sizing: border-box;
 }
-.col-md-6 {
-    height: 50vh;
-    min-height: 360px;
-}
 .display {
     background-color: var(--squares);
     height: 250px;
@@ -31,4 +27,8 @@
 .rightSwap {
     transition: all 0.2s ease;
     transform: translate(-18px);
+}
+.transition {
+    /* set to 0.2s */
+    transition: all 0.2s ease;
 }
