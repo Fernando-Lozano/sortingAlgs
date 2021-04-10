@@ -186,7 +186,7 @@ function selectionSwap(el1, el2, transform) {
 }
 // *** Insertion sort ***
 
-// time complexity of O(n^2)
+// time complexity of O(n^2)                        // needs changing
 
 const   insertionDisplay = document.querySelectorAll(".display")[2],
         insertionSortBtn = document.querySelector("#insertionSort");
@@ -196,7 +196,7 @@ generatearray(insertionDisplay);
 
 insertionSortBtn.addEventListener("click", async function() {
     this.classList.toggle("disabled");
-    await insertionSort();
+    // await insertionSort();                       // temporary
     this.classList.toggle("disabled");
 });
 
@@ -236,7 +236,7 @@ async function insertionSort(delay = 100) {
         // swaps the two
         if (temp !== i) {
             await selectionSwap(blocks[i], blocks[temp], temp-i);
-            blocks = document.querySelectorAll("#two .block");
+            blocks = document.querySelectorAll("#three .block");
             blocks[i].style.backgroundColor = colors.sorted;
             blocks[temp].style.backgroundColor = colors.main;
         }
