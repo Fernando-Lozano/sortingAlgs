@@ -186,7 +186,7 @@ function selectionSwap(el1, el2, transform) {
 }
 // *** Insertion sort ***
 
-// time complexity of O(n^2)                        // needs changing
+// time complexity of O(n^2)
 
 const   insertionDisplay = document.querySelectorAll(".display")[2],
         insertionSortBtn = document.querySelector("#insertionSort");
@@ -196,85 +196,84 @@ generatearray(insertionDisplay);
 
 insertionSortBtn.addEventListener("click", async function() {
     this.classList.toggle("disabled");
-    // await insertionSort();                       // temporary
+    await insertionSort();
     this.classList.toggle("disabled");
 });
 
 async function insertionSort(delay = 100) {
-    let blocks = document.querySelectorAll("#three .block");                // i have changed code till here
+    let blocks = document.querySelectorAll("#three .block");
 
-    for (let i = 0; i < blocks.length-1; i++) {
-        // To change background-color of the
-        // blocks to be compared
-        blocks[i].style.backgroundColor = colors.compare;
-        
-        let temp = i;
-        for (let j = i+1; j < blocks.length; j++) {
-            // To change background-color of the
-            // blocks to be compared
-            blocks[j].style.backgroundColor = colors.compare;
-            
+    let j; // used to traverse in reverse
+    for (let i = 1; i < blocks.length; i++) {
+            j = i - 1;
+
+            // first element is technically always sorted
+            blocks[0].style.backgroundColor = colors.sorted;
+            // element to be compared with predecessors 
+            blocks[i].style.backgroundColor = colors.compare;
+
             // To wait for .1 sec
             await new Promise((resolve) =>
             setTimeout(() => {
                 resolve();
             }, delay)
             );
-            
-            let value1 = Number(blocks[temp].dataset.value);
-            let value2 = Number(blocks[j].dataset.value);
-            if (value1 > value2) {
-                (temp!==i)?blocks[temp].style.backgroundColor = colors.main:"";
-                temp = j;
-                blocks[temp].style.backgroundColor = colors.temp;
+            let value1 = Number(blocks[j].dataset.value);
+            let value2 = Number(blocks[i].dataset.value);
+            let height = blocks[i].style.height; // used to change height once element is "inserted"
+
+            // reverse traverser 
+            while (j >= 0 && value1 > value2) {
+                blocks[j].style.backgroundColor = colors.compare;
+                await insertionShuffle(blocks[j+1], blocks[j]);
+                j = j - 1;
+                if (j >= 0) value1 = Number(blocks[j].dataset.value);
+            }
+            // if element to be sorted is not sorted do the following
+            if (j+1 !== i) {
+                // using index to reference proper element in setTimeout
+                let index = j+1;
+                blocks[index].style.backgroundColor = colors.sorted;
+                blocks[index].classList.toggle("transition");
+                blocks[index].style.opacity = "";
+                blocks[index].style.height = height;
+                blocks[index].dataset.value = value2;
+                setTimeout(() => {
+                    blocks[index].classList.toggle("transition");
+                }, 250);
             }
             else {
-                blocks[j].style.backgroundColor = colors.main;
+                blocks[i].style.backgroundColor = colors.sorted;
             }
-
-        }
-        // swaps the two
-        if (temp !== i) {
-            await selectionSwap(blocks[i], blocks[temp], temp-i);
-            blocks = document.querySelectorAll("#three .block");
-            blocks[i].style.backgroundColor = colors.sorted;
-            blocks[temp].style.backgroundColor = colors.main;
-        }
-        else {
-            blocks[i].style.backgroundColor = colors.sorted;
-        }
     }
-    blocks[blocks.length-1].style.backgroundColor = colors.sorted;
 }
 
-function selectionSwap(el1, el2, transform) {
+function insertionShuffle(el_dest, el_source) {
     return new Promise((resolve) => {
-        // add animations here
-        el1.classList.toggle("transition");
-        el1.style.transform = `translate(${transform * 18}px)`;
+
+        // adds animations here
+        el_source.classList.toggle("transition");
+        el_dest.style.opacity = "0";
+        el_source.style.transform = `translate(18px)`;
         
-        el2.classList.toggle("transition");
-        el2.style.transform = `translate(-${transform * 18}px)`;
-
         window.requestAnimationFrame(function () {
-
+            
             // For waiting for .25 sec
             setTimeout(async () => {
-                // remove animations here
-                el1.classList.toggle("transition");
-                el1.style.transform = "";
 
-                el2.classList.toggle("transition");
-                el2.style.transform = "";
-                // swap heights
-                let temp = el1.style.height;
-                el1.style.height = el2.style.height;
-                el2.style.height = temp;
+                // removes animations here
+                el_source.classList.toggle("transition");
+                el_dest.style.opacity = "";
+                el_source.style.transform = "";
+                el_source.style.opacity = "0";
+
+                el_dest.style.height = el_source.style.height;
             
-                // swap values
-                temp = el1.dataset.value;
-                el1.dataset.value = el2.dataset.value;
-                el2.dataset.value = temp;
+                // moves value
+                el_dest.dataset.value = el_source.dataset.value;
+
+                el_dest.style.backgroundColor =  colors.sorted;
+                
                 resolve();
             }, 250);
         });
